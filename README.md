@@ -1,1 +1,1 @@
-## Starting Repo for MERN Stack - The Complete Guide
+Online Shop using React, Semantic UI, NodeJS and Stripe
