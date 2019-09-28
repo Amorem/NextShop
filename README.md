@@ -1,1 +1,1 @@
-Online Shop using React, Semantic UI, NodeJS and Stripe
+Online Shop using NextJS 9 (api routes !), Semantic UI, NodeJS and Stripe
