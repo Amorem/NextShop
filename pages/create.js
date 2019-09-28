@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+import baseUrl from "../utils/baseUrl";
 import {
   Form,
   Input,
@@ -21,6 +23,7 @@ function CreateProduct() {
   const [product, setProduct] = React.useState(INITIAL_PRODUCT);
   const [mediaPreview, setMediaPreview] = React.useState("");
   const [success, setSuccess] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   function handleChange(event) {
     const { name, value, files } = event.target;
@@ -32,9 +35,26 @@ function CreateProduct() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleImageUpload() {
+    const data = new FormData();
+    data.append("file", product.media);
+    data.append("upload_preset", "nextshop");
+    data.append("cloud_name", "amorem");
+    const response = await axios.post(process.env.CLOUDINARY_URL, data);
+    const mediaUrl = response.data.url;
+    return mediaUrl;
+  }
+
+  async function handleSubmit(event) {
+    setLoading(true);
     event.preventDefault();
-    console.log(product);
+    const mediaUrl = await handleImageUpload();
+    console.log({ mediaUrl });
+    const url = `${baseUrl}/api/product`;
+    const { name, price, description } = product;
+    const payload = { name, price, description, mediaUrl };
+    console.log(await axios.post(url, payload));
+    setLoading(false);
     setProduct(INITIAL_PRODUCT);
     setSuccess(true);
   }
@@ -45,7 +65,7 @@ function CreateProduct() {
         <Icon name="add" color="orange" />
         Create new Product
       </Header>
-      <Form onSubmit={handleSubmit} success={success}>
+      <Form onSubmit={handleSubmit} loading={loading} success={success}>
         <Message
           success
           icon="check"
@@ -92,6 +112,7 @@ function CreateProduct() {
           onChange={handleChange}
         />
         <Form.Field
+          disabled={loading}
           control={Button}
           color="blue"
           icon="pencil alternate"
