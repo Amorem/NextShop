@@ -1,5 +1,6 @@
 import cookie from "js-cookie";
 import Router from "next/router";
+import { destroyCookie } from "nookies";
 
 export function handleLogin(token) {
   cookie.set("token", token);
@@ -16,4 +17,9 @@ export function redirectUser(ctx, location) {
   else {
     Router.push(location);
   }
+}
+
+export function handleLogout() {
+  cookie.remove("token");
+  Router.push("/login");
 }
